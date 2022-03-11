@@ -1,45 +1,41 @@
 package com.company.model;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.time.LocalDate;
+import static javax.persistence.CascadeType.*;
+
 @Entity
 @Table(name = "students")
 public class Student {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-     private long id;
+   @Id
+  @SequenceGenerator(
+           name = "student_sequence",
+          sequenceName = "student_sequence",
+         allocationSize = 1
+   )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,generator = "student_sequence"
+    )
+    private long id;
 
-    @Column(name = "student_first_name")
     @NotEmpty(message = "firstName should not be empty")
-    @Size(min = 1,max = 25,message = "firstName should be between 2 and 25 characters")
-     private String firstName;
+    @Size(min = 1, max = 25, message = "firstName should be between 2 and 25 characters")
+    private String firstName;
 
     @Column(name = "student_email")
     @Email(message = "email must follow the formatter: ***@*** ")
     @NotBlank(message = "Email must have a value")
-     private String email;
+    private String email;
 
-    @Column(name = "student_last_name",unique = true)
+    @Column(name = "student_last_name")
     @NotEmpty(message = "lastName should not be empty")
-    @Size(min = 1,max = 25,message = "lastName should be between 2 and 25 characters")
+    @Size(min = 1, max = 25, message = "lastName should be between 2 and 25 characters")
     private String lastName;
 
-    @NotNull(message = "birthday is a required field. ")
-    @DateTimeFormat(pattern = "dd-mm-yyyy")
-     private LocalDate birthOfDay;
+    @ManyToOne(cascade = {DETACH, REFRESH, MERGE,PERSIST})
+    private Group group;
 
     public Student() {
-    }
-
-    public Student(String firstName, String email, String lastName,LocalDate birthOfDay) {
-        this.firstName = firstName;
-        this.email = email;
-        this.lastName = lastName;
-        this.birthOfDay=birthOfDay;
     }
 
     public long getId() {
@@ -74,12 +70,12 @@ public class Student {
         this.lastName = lastName;
     }
 
-    public LocalDate getBirthOfDay() {
-        return birthOfDay;
+    public Group getGroup() {
+        return group;
     }
 
-    public void setBirthOfDay(LocalDate birthOfDay) {
-        this.birthOfDay = birthOfDay;
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     @Override
@@ -89,8 +85,6 @@ public class Student {
                 ", firstName='" + firstName + '\'' +
                 ", email='" + email + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", birthOfDay=" + birthOfDay +
                 '}';
     }
-
 }

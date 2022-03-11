@@ -1,13 +1,8 @@
 package com.company.model;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
-import java.util.Date;
 import java.util.List;
-
 import static javax.persistence.CascadeType.*;
 
 @Entity
@@ -15,34 +10,39 @@ import static javax.persistence.CascadeType.*;
 public class Course {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+            name = "course_sequence",
+            sequenceName = "course_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "course_sequence"
+    )
     private long id;
 
     @NotEmpty(message = "courseName  should not be empty")
-    @Size(min = 3,max = 15,message = "courseName should be between 3 and 15 characters")
+    @Size(min = 3, max = 15, message = "courseName should be between 3 and 15 characters")
     private String courseName;
 
-    @DateTimeFormat(pattern = "mm")
-    @Past(message = "duration field is mandatory / format mm")
-    @Size(min = 1,max =12,message = "duration should be between 1 and 12 months")
-    private Date duration;
+    @NotEmpty(message = "format mm")
+    private String duration;
 
-    @ManyToMany(cascade ={DETACH,REFRESH,MERGE, PERSIST})
+    @ManyToMany(cascade = {MERGE,REMOVE,PERSIST,REFRESH,DETACH},fetch = FetchType.LAZY,mappedBy = "course")
+//    @JoinTable(name = "courses_groups",
+//            joinColumns = @JoinColumn(name = "groups_id"),inverseJoinColumns
+//            = @JoinColumn(name = "course_id"))
+
     private List<Group> groupList;
 
-    @OneToMany
-    @JoinColumn(name = "student_id")
-    private List<Student> studentList;
-
-    @OneToOne(mappedBy = "course")
+    @OneToOne(cascade = {MERGE,REMOVE,DETACH,MERGE},mappedBy = "course",fetch = FetchType.EAGER)
     private Teacher teacher;
 
-    public Course() {
-    }
+    @ManyToOne(cascade = {MERGE, PERSIST, REFRESH, DETACH})
+    @JoinColumn(name = "company_id")
+    private Company company;
 
-    public Course(String courseName, Date duration) {
-        this.courseName = courseName;
-        this.duration = duration;
+    public Course() {
     }
 
     public long getId() {
@@ -61,28 +61,20 @@ public class Course {
         this.courseName = courseName;
     }
 
-    public Date getDuration() {
+    public String getDuration() {
         return duration;
     }
 
-    public void setDuration(Date duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 
-    public List<Group> getGroupList() {
-        return groupList;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setGroupList(List<Group> groupList) {
-        this.groupList = groupList;
-    }
-
-    public List<Student> getStudentList() {
-        return studentList;
-    }
-
-    public void setStudentList(List<Student> studentList) {
-        this.studentList = studentList;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     public Teacher getTeacher() {
@@ -93,12 +85,21 @@ public class Course {
         this.teacher = teacher;
     }
 
+    public List<Group> getGroupList() {
+        return groupList;
+    }
+
+    public void setGroupList(List<Group> groupList) {
+        this.groupList = groupList;
+    }
+
     @Override
     public String toString() {
         return "Course{" +
                 "id=" + id +
                 ", courseName='" + courseName + '\'' +
-                ", duration=" + duration +
+                ", duration='" + duration + '\'' +
                 '}';
     }
 }
+

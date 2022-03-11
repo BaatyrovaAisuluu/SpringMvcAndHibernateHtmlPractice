@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>createGroup</title>
+
+</head>
+<style>
+    .form {
+        margin: 0 auto;
+        height: 600px;
+        width: 700px;
+        background-color: #b0e0e6;
+        text-align: center;
+        margin-top: 20px;
+
+    }
+
+    .label {
+        font-weight: 900;
+        font-size: 25px;
+        margin-top: 100px;
+        color: #191970;
+        margin-right: 100px;
+    }
+
+    .colour {
+        border-radius: 10px;
+        background-color: #7fffd4;
+        width: 100px;
+        height: 50px;
+        font-size: 30px;
+        margin: 100px;
+        text-decoration: none;
+    }
+
+    .input {
+        border-radius: 5px;
+        width: 200px;
+        height: 50px;
+        margin: 40px;
+    }
+</style>
+
+<body>
+<h1 style="margin-left: 500px">Add Group</h1>
+
+<hr>
+<form class="form" style="margin-left: 300px; margin-bottom: 200px" th:method="POST" th:action="@{saveGroup}"
+      th:object="${courseGroup}">
+    <label class="label" for="groupName">Enter groupName: </label>
+    <input class="input" type="text" th:field="*{groupName}" id="groupName"/>
+    <br/>
+
+    <label class="label" for="dateOfStart">Enter dateOfStart:</label>
+    <input class="input" type="text" th:field="*{dateOfStart}" id="dateOfStart"/>
+    <br/>
+
+    <label class="label" for="dateOfFinish">Enter dateOfFinish:</label>
+    <input class="input" type="text" th:field="*{dateOfFinish}" id="dateOfFinish"/>
+    <br/>
+
+    <br>
+    <input class="colour" type="submit" value="Create!">
+</form>
+</body>
+</html>
+

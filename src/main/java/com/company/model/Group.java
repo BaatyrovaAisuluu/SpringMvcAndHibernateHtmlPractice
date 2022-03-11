@@ -1,42 +1,48 @@
 package com.company.model;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-
 import static javax.persistence.CascadeType.*;
-import static javax.persistence.CascadeType.PERSIST;
 
 @Entity
 @Table(name = "groups")
 public class Group {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+   @Id
+   @SequenceGenerator(
+           name = "group_sequence",
+           sequenceName = "group_sequence",
+           allocationSize = 1
+   )
+   @GeneratedValue(
+           strategy = GenerationType.SEQUENCE,
+           generator = "group_sequence"
+   )
     private long id;
-
     @NotEmpty(message = "groupName should not be empty")
     @Size(min = 2,max = 10,message = "groupName should be between 2 and 10 characters")
     private String groupName;
 
-    @DateTimeFormat(pattern = "dd-mm-yyyy")
-    @Past(message = "Date field is mandatory / format dd-mm-yyyy")
-    private Date dateOfStart;
-    @DateTimeFormat(pattern = "dd-mm-yyyy")
-    @Past(message = "Date field is mandatory / format dd-mm-yyyy")
-    private Date dateOfFinish;
 
-    @ManyToMany(cascade ={DETACH,REFRESH,MERGE, PERSIST},fetch = FetchType.LAZY,mappedBy = "groupList")
-    private List<Course>courseList;
+    private String dateOfStart;
+    private String dateOfFinish;
+
+    @ManyToMany(cascade ={MERGE,REFRESH,PERSIST},fetch = FetchType.EAGER)
+    @JoinTable(name = "courses_groups",
+            joinColumns = @JoinColumn(name = "groups_id"),inverseJoinColumns
+            = @JoinColumn(name = "course_id"))
+    private List<Course>course;
+
+    @OneToMany(cascade = ALL,mappedBy = "group")
+    private List<Student>studentList;
 
     public Group() {
     }
 
-    public Group(String groupName, Date dateOfStart, Date dateOfFinish) {
+    public Group( String groupName, String dateOfStart, String dateOfFinish) {
+
         this.groupName = groupName;
         this.dateOfStart = dateOfStart;
         this.dateOfFinish = dateOfFinish;
@@ -58,28 +64,42 @@ public class Group {
         this.groupName = groupName;
     }
 
-    public Date getDateOfStart() {
+    public String getDateOfStart() {
         return dateOfStart;
     }
 
-    public void setDateOfStart(Date dateOfStart) {
+    public void setDateOfStart(String dateOfStart) {
         this.dateOfStart = dateOfStart;
     }
 
-    public Date getDateOfFinish() {
+    public String getDateOfFinish() {
         return dateOfFinish;
     }
 
-    public void setDateOfFinish(Date dateOfFinish) {
+    public void setDateOfFinish(String dateOfFinish) {
         this.dateOfFinish = dateOfFinish;
     }
 
-    public List<Course> getCourseList() {
-        return courseList;
+    public List<Student> getStudentList() {
+        return studentList;
     }
 
     public void setCourseList(List<Course> courseList) {
-        this.courseList = courseList;
+        this.course = courseList;
+    }
+
+    public List<Course> getCourseList() {
+        return course;
+    }
+    public void getCourse(Course course){
+        if(this.course==null){
+            this.course=new ArrayList<>();
+        }
+        this.course.add(course);
+    }
+
+    public void setStudentList(List<Student> studentList) {
+        this.studentList = studentList;
     }
 
     @Override
@@ -87,8 +107,8 @@ public class Group {
         return "Group{" +
                 "id=" + id +
                 ", groupName='" + groupName + '\'' +
-                ", dateOfStart=" + dateOfStart +
-                ", dateOfFinish=" + dateOfFinish +
+                ", dateOfStart='" + dateOfStart + '\'' +
+                ", dateOfFinish='" + dateOfFinish + '\'' +
                 '}';
     }
 }

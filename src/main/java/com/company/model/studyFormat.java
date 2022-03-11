@@ -1,16 +1,13 @@
 package com.company.model;
 
 public enum studyFormat {
-    ONLINE("ONLINE"),
-    OFLINE("OFLINE");
+    ONLINE("online"),
+    OFFLINE("offline");
 
-    private final  String format;
 
-    studyFormat(String format) {
-        this.format = format;
-    }
+    private String string;
 
-    public String getFormat() {
-        return format;
+    studyFormat(String string) {
+        this.string = string;
     }
 }

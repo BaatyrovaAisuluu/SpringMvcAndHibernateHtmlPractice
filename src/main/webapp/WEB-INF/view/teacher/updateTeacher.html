@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>updateTeacher</title>
+</head>
+<style>
+    .form {
+        margin: 0 auto;
+        height: 600px;
+        width: 700px;
+        background-color: #b0e0e6;
+        text-align: center;
+        margin-top: 20px;
+
+    }
+
+    .label {
+        font-weight: 900;
+        font-size: 25px;
+        margin-top: 100px;
+        color: #191970;
+        margin-right: 100px;
+    }
+
+    .colour {
+        border-radius: 10px;
+        background-color: #7fffd4;
+        width: 100px;
+        height: 50px;
+        font-size: 30px;
+        margin: 100px;
+        text-decoration: none;
+    }
+
+    .input {
+        border-radius: 5px;
+        width: 200px;
+        height: 50px;
+        margin: 40px;
+    }
+</style>
+
+<body>
+<h1 style="margin-left: 500px"> update Company</h1>
+
+<hr>
+<form class="form" th:method="PATCH" th:action="
+@{/teacher/{id}/idUpdate/{idTeacher}(id=${idCourse},idTeacher=${updateTeacher.getId()})}"
+      th:object="${updateTeacher}">
+    <label class="label" for="firstName">Enter firstName: </label>
+    <input class="input" type="text" th:field="*{teacherFirstName}" id="firstName"/>
+    <br/>
+
+    <label class="label" for="email">Enter email:</label>
+    <input class="input" type="text" th:field="*{email}" id="email"/>
+    <br/>
+
+    <label class="label" for="lastName">Enter lastName:</label>
+    <input class="input" type="text" th:field="*{lastName}" id="lastName"/>
+    <br/>
+
+    <label class="label" for="StudyFormat">Enter studyFormat:</label>
+    <input class="input" type="text" th:field="*{studyFormat}" id="StudyFormat"/>
+    <br/>
+    <input class="colour" type="submit" value="update!">
+</form>
+
+
+</body>
+</html>

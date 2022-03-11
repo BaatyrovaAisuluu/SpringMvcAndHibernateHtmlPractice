@@ -1,9 +1,6 @@
 package com.company.model;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import static javax.persistence.CascadeType.*;
@@ -13,38 +10,40 @@ import static javax.persistence.CascadeType.*;
 public class Teacher {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+            name = "teacher_sequence",
+            sequenceName = "teacher_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,generator = "teacher_sequence"
+    )
     private long id;
 
-    @NotEmpty(message = "firstName should not be empty")
-    @Size(min = 1,max = 25,message = "firstName should be between 2 and 25 characters")
-    @Column(name = "teacher_first_name")
-    private String firstName;
+    @Size(min = 1, max = 30, message = "firstName should be between 2 and 25 characters")
+    private String TeacherFirstName;
 
-    @Column(name = "teacher_email")
     @Email(message = "email must follow the formatter: ***@*** ")
-    @NotBlank(message = "Email must have a value")
     private String email;
 
-    @NotEmpty(message = "lastName should not be empty")
-    @Size(min = 1,max = 25,message = "lastName should be between 2 and 25 characters")
-    @Column(name = "teacher_last_name")
+    @Size(min = 1, max = 25, message = "lastName should be between 2 and 25 characters")
     private String lastName;
-
 
     @Enumerated(EnumType.STRING)
     private studyFormat studyFormat;
 
-    @OneToOne(cascade = ALL)
+    @OneToOne(cascade = {MERGE, DETACH, REFRESH, PERSIST},fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
     private Course course;
 
     public Teacher() {
     }
 
-    public Teacher(String firstName, String email, String lastName,
+    public Teacher(long id, String TeacherFirstName,
+                   String email, String lastName,
                    com.company.model.studyFormat studyFormat) {
-        this.firstName = firstName;
+        this.id = id;
+        this.TeacherFirstName = TeacherFirstName;
         this.email = email;
         this.lastName = lastName;
         this.studyFormat = studyFormat;
@@ -58,32 +57,40 @@ public class Teacher {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public String getTeacherFirstName() {
+        return TeacherFirstName;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public com.company.model.studyFormat getStudyFormat() {
         return studyFormat;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public void setTeacherFirstName(String firstName) {
+        this.TeacherFirstName = firstName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public void setStudyFormat(com.company.model.studyFormat studyFormat) {
@@ -94,7 +101,7 @@ public class Teacher {
     public String toString() {
         return "Teacher{" +
                 "id=" + id +
-                ", firstName='" + firstName + '\'' +
+                ", firstName='" + TeacherFirstName + '\'' +
                 ", email='" + email + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", studyFormat=" + studyFormat +

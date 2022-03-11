@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>getAllCourse</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+</head>
+<body>
+<table class="table">
+    <thead class="table-light">
+    <tr>
+        <th> Id</th>
+        <th> CourseName</th>
+        <th> duration</th>
+        <th> update</th>
+        <th> delete</th>
+        <th> teacher</th>
+        <th> group</th>
+    </tr>
+    </thead>
+    <tbody th:each="course: ${getAllCourse}">
+    <tr>
+        <td th:text="${course.getId()}"></td>
+        <td th:text="${course.getCourseName()}"></td>
+        <td th:text="${course.getDuration()}"></td>
+
+        <td>
+            <form th:action="@{/course/{id}/{idUpdate}/idUpdate(id=${idCompany},idUpdate=${course.getId()})}">
+                <input type="submit"
+                       class="btn btn danger"
+                       value="Edit"></form>
+        </td>
+        <td>
+            <form th:method="DELETE" th:action="@{/course/{id}/delete/{idDelete}(id=${idCompany},idDelete=${course.getId()})}">
+                <input type="submit"
+                       class="btn btn danger"
+                       value="Delete">
+            </form>
+        </td>
+
+
+        <td><a th:href="@{/teacher/{id}(id=${course.getId()})}">teacher</a></td>
+
+        <td><a th:href="@{/groups/{id}/(id=${course.getId()})}"> group</a></td>
+
+    </tr>
+
+    </tbody>
+
+</table>
+<a th:href="@{{id}/newCourse(id=${idCompany})}">create Course</a>
+<br>
+<hr>
+<h5><a role="button" style="font-size: 30px; color: midnightblue;background-color:yellow " th:href="@{/companies}">Exit</a> </h5>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+
+</body>
+</html>
